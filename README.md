@@ -3,7 +3,7 @@ po-property-translator
 
 Round-trip transformation between Java property files and PO-files for translations. 
 This tool makes translating text inside java:s properties-files easier.
-When running the export-tool, a .po-file is produces. This can be sent for translation.
+When running the export-tool, a .po-file is produced. This can be sent for translation.
 When the file comes back, the tool PoImporter can import these texts back into the .properties-files.
 It can be useful when using GWT (Google web toolkit).
 
