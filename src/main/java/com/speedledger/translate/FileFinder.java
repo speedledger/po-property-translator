@@ -10,7 +10,6 @@ import java.util.logging.Logger;
 /**
  * This class finds language-files to process
  */
-
 public class FileFinder {
     private static Logger LOG = LoggerFactory.getLogger(FileFinder.class);
     public static String extension = ".properties";

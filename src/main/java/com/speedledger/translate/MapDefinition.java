@@ -2,7 +2,7 @@ package com.speedledger.translate;
 
 /**
  */
-public class MapDefinition extends JavaProperty {
+public class MapDefinition extends PropertyFileItem {
 
 
     private final String value;

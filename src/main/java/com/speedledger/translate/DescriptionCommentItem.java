@@ -14,6 +14,6 @@ public class DescriptionCommentItem extends CommentItem {
 
     @Override
     public String getPropertiesFileFormatted() {
-        return "## "+getItem();
+        return "## " + getItem();
     }
 }

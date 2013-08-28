@@ -27,7 +27,7 @@ public class JavaPropertyFileWriter {
         Writer writer = null;
         try {
             writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile), "utf-8"));
-            for (JavaProperty prop : content.getContent()) {
+            for (PropertyFileItem prop : content.getContent()) {
                 LOG.finest("write:"+prop.getItem());
                 writer.write(prop.getPropertiesFileFormatted());
                 writer.write("\n");

@@ -1,39 +1,44 @@
 package com.speedledger.translate;
 
+import com.google.common.collect.Maps;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class represents a java-property-file. Lines keep their order.
  */
 public class JavaPropertyFile {
-    private List<JavaProperty> content=new ArrayList<JavaProperty>();
+    private List<PropertyFileItem> content = new ArrayList<PropertyFileItem>();
+    private Map<String, TranslatableItem> propertiesByKey = Maps.newHashMap();
 
-    public List<JavaProperty> getContent() {
-        return content;
+    public List<PropertyFileItem> getContent() {
+        return Collections.unmodifiableList(content);
     }
 
-    public void setContent(List<JavaProperty> content) {
-        this.content = content;
+    public void addItem(PropertyFileItem propertyFileItem) {
+        content.add(propertyFileItem);
+        putInMap(propertyFileItem);
     }
 
-    public int findItem(String key) {
-        for (int i = 0; i < content.size(); i++) {
-            JavaProperty prop = content.get(i);
-            if(prop instanceof TranslatableItem) {
-                TranslatableItem item= (TranslatableItem) prop;
-                if(item.getKey().equals(key)) return i;
-            }
+    private void putInMap(PropertyFileItem propertyFileItem) {
+        if (propertyFileItem instanceof TranslatableItem) {
+            TranslatableItem translatableItem = (TranslatableItem) propertyFileItem;
+            propertiesByKey.put(translatableItem.getKey(), translatableItem);
         }
-        return -1;
     }
 
-    public JavaProperty getItem(String key) {
-        int index = findItem(key);
-        if(index != -1) {
-            return getContent().get(index);
+    public TranslatableItem getItem(String key) {
+        return propertiesByKey.get(key);
+    }
+
+    public void setItem(int index, PropertyFileItem propertyFileItem) {
+        PropertyFileItem removedItem = content.set(index, propertyFileItem);
+        if(removedItem != null && removedItem instanceof TranslatableItem) {
+            propertiesByKey.remove(((TranslatableItem) removedItem).getKey());
         }
-        return null;
+        putInMap(propertyFileItem);
     }
-
 }

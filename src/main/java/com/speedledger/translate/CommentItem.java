@@ -3,7 +3,7 @@ package com.speedledger.translate;
 /**
  * This class represents a comment in a java-property file.
  */
-public class CommentItem extends JavaProperty {
+public class CommentItem extends PropertyFileItem {
     String rawComment;
 
     public CommentItem(String rawComment) {

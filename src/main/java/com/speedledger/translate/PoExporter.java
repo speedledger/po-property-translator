@@ -41,7 +41,7 @@ public class PoExporter {
 
     private static void populateCatalog(FileItem file, JavaPropertyFile data, JavaPropertyFile dataReferenceLang, Catalog export) {
         String description = "";
-        for (JavaProperty line : data.getContent()) {
+        for (PropertyFileItem line : data.getContent()) {
             if (line instanceof DescriptionCommentItem) {
                 description = ((DescriptionCommentItem) line).getItem();
             }
@@ -58,7 +58,7 @@ public class PoExporter {
                 if (!description.isEmpty()) {
                     msg.addComment(description);
                 }
-                JavaProperty referenceLang = dataReferenceLang.getItem(item.getKey());
+                PropertyFileItem referenceLang = dataReferenceLang.getItem(item.getKey());
                 if (referenceLang != null && referenceLang instanceof TranslatableItem) {
                     String referenceText = ((TranslatableItem) referenceLang).getValue();
                     if (!referenceText.isEmpty()) {

@@ -3,7 +3,7 @@ package com.speedledger.translate;
 /**
  * This class represents translatable item in a java-property file.
  */
-public class TranslatableItem extends JavaProperty {
+public class TranslatableItem extends PropertyFileItem {
     private String key;
     private String value;
 

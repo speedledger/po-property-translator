@@ -58,9 +58,8 @@ public class PoImporter {
             boolean dirty = false;
             for (int row = 0; row < msgs.size(); row++) {
                 Message msg = msgs.get(row);
-                int idIndex = property.findItem(msg.getMsgid());
-                if (idIndex >= 0) {
-                    TranslatableItem val = (TranslatableItem) property.getContent().get(idIndex);
+                TranslatableItem val = property.getItem(msg.getMsgid());
+                if (val != null) {
                     val.setValue(msg.getMsgstr());
                     dirty = true;
                 } else {
