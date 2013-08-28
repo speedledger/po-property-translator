@@ -19,7 +19,7 @@ public class MainClass {
             }
             if (args[0].equals("import")) {
                 PoImporter importer = new PoImporter();
-                importer.Import(lang);
+                importer.importPo(lang);
             } else if (args[0].equals("export")) {
                 PoExporter exporter = new PoExporter();
                 exporter.export(lang);

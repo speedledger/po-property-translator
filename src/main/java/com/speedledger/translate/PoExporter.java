@@ -24,13 +24,14 @@ public class PoExporter {
      * @throws IOException
      */
     public void export(String lang) throws IOException {
-        LOG.info("export started lang:"+lang);
+        LOG.info("export started lang:" + lang);
         List<FileItem> files = finder.getFileList(new File(".")).getFiles();
         LOG.finest("items:" + files);
         Catalog export = new Catalog();
         for (FileItem file : files) {
             JavaPropertyFile data = JavaPropertyFileReader.readFile(file.getLangFile(lang));
-            populateCatalog(file, data, export);
+            JavaPropertyFile dataReferenceLang = JavaPropertyFileReader.readFile(file.getFile());
+            populateCatalog(file, data, dataReferenceLang, export);
         }
         PoWriter writer = new PoWriter();
         File outFile = new File(defaultFileName);
@@ -38,17 +39,33 @@ public class PoExporter {
         LOG.info("export done, wrote:" + outFile.getAbsolutePath());
     }
 
-    private static void populateCatalog(FileItem file, JavaPropertyFile data, Catalog export) {
+    private static void populateCatalog(FileItem file, JavaPropertyFile data, JavaPropertyFile dataReferenceLang, Catalog export) {
+        String description = "";
         for (JavaProperty line : data.getContent()) {
+            if (line instanceof DescriptionCommentItem) {
+                description = ((DescriptionCommentItem) line).getItem();
+            }
+
             Message msg = new Message();
             if (line instanceof TranslatableItem) {
                 TranslatableItem item = (TranslatableItem) line;
                 msg.setMsgid(item.getKey());
                 msg.setMsgstr(item.getValue());
                 String packageName = file.getPackageAndNameWithoutExt();
-                LOG.fine("packageName:"+packageName+":");
+                LOG.fine("packageName:" + packageName + ":");
                 //msg.addSourceReference(packName);
                 msg.setMsgctxt(packageName);
+                if (!description.isEmpty()) {
+                    msg.addComment(description);
+                }
+                JavaProperty referenceLang = dataReferenceLang.getItem(item.getKey());
+                if (referenceLang != null && referenceLang instanceof TranslatableItem) {
+                    String referenceText = ((TranslatableItem) referenceLang).getValue();
+                    if (!referenceText.isEmpty()) {
+                        msg.addComment(referenceText);
+                    }
+                }
+
                 export.addMessage(msg);
             }
         }
@@ -56,9 +73,9 @@ public class PoExporter {
 
     public static void main(String[] args) throws IOException {
         PoExporter exporter = new PoExporter();
-        String lang="";
-        if(args.length>0) {
-            lang=args[0];
+        String lang = "";
+        if (args.length > 0) {
+            lang = args[0];
         }
         exporter.export(lang);
     }

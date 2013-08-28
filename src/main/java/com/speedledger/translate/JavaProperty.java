@@ -8,4 +8,9 @@ public abstract class JavaProperty {
       * @return String representing this line in the property-file.
      */
     public abstract String getItem();
+
+    public String getPropertiesFileFormatted() {
+        return getItem();
+    }
+
 }

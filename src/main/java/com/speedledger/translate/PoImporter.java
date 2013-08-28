@@ -24,22 +24,23 @@ public class PoImporter {
      * @param lang    language to use or empty for default
      * @throws IOException
      */
-    public void Import(String lang) throws IOException {
+    public void importPo(String lang) throws IOException {
         PoParser parser = new PoParser();
         Catalog cat = parser.parseCatalog(new File(defaultFileName));
         Iterator<Message> iterator = cat.iterator();
         ArrayList<Message> msgs = new ArrayList<Message>();
         String oldCtx = null;
+        FileList allFiles= finder.getFileList(new File("."));
         while (iterator.hasNext()) {
             Message msg = iterator.next();
             if (!msg.getMsgctxt().equals(oldCtx) && oldCtx != null) {
-                handle(msgs, lang);
+                handle(msgs, lang, allFiles);
                 msgs.clear();
             }
             msgs.add(msg);
             oldCtx = msg.getMsgctxt();
         }
-        handle(msgs, lang); // handle unprocessed msgs
+        handle(msgs, lang, allFiles); // handle unprocessed msgs
     }
 
     /**
@@ -49,11 +50,11 @@ public class PoImporter {
      * @param lang language to use
      * @throws IOException
      */
-    private void handle(ArrayList<Message> msgs, String lang) throws IOException {
+    private void handle(ArrayList<Message> msgs, String lang, FileList allFiles) throws IOException {
         String packageName = msgs.get(0).getMsgctxt();
-        FileItem item = finder.getFileList(new File(".")).getItemByPackage(packageName);
+        FileItem item = allFiles.getItemByPackage(packageName);
         if (item != null) {
-            JavaPropertyFile property = JavaPropertyFileReader.readFile(item.getFile());
+            JavaPropertyFile property = JavaPropertyFileReader.readFile(item.getLangFile(lang));
             boolean dirty = false;
             for (int row = 0; row < msgs.size(); row++) {
                 Message msg = msgs.get(row);
@@ -80,6 +81,6 @@ public class PoImporter {
         if(args.length>0) {
             lang=args[0];
         }
-        importer.Import(lang);
+        importer.importPo(lang);
     }
 }

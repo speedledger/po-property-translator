@@ -13,6 +13,7 @@ import java.util.logging.Logger;
  */
 public class JavaPropertyFileReader {
     private static Logger LOG = LoggerFactory.getLogger(JavaPropertyFileReader.class);
+
     public static JavaPropertyFile readFile(File file) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(file));
         String line;
@@ -28,14 +29,20 @@ public class JavaPropertyFileReader {
             }
         }
         reader.close();
+        parser.cleanUpMapDefinitions();
         return parser.parsedData;
     }
+
     private static class Parser {
         JavaPropertyFile parsedData = new JavaPropertyFile();
 
         public void parseRow(String line, File file) {
-            if (isComment(line)) { // comment found
-                parsedData.getContent().add(new CommentItem(line));
+            if(isEmptyLines(line)) {
+                parsedData.getContent().add(new EmptyLineItem());
+            } else if(isDescriptionComment(line)) {
+                parsedData.getContent().add(new DescriptionCommentItem(line.substring(2)));
+            } else if (isComment(line)) { // comment found
+                parsedData.getContent().add(new CommentItem(line.substring(1)));
             } else {
                 LOG.finest("read line:" + line);
                 String[] item = line.split("=");
@@ -44,23 +51,51 @@ public class JavaPropertyFileReader {
                     value = item[1];
                 }
                 if (item.length == 0 || item.length > 2) {
-                    LOG.warning("warning, invalid line, many'=' in line:" + line + " file:"+file);
+                    LOG.warning("warning, invalid line, many'=' in line:" + line + " file:" + file);
                     value = line.substring(item[0].length() + 1); // treat as translatable-item
                 }
                 parsedData.getContent().add(new TranslatableItem(item[0], value));
             }
 
         }
+
+        /**
+         * Remove GWT map definitions from the translation output.
+         */
+        public void cleanUpMapDefinitions() {
+            for (int i = 0; i < parsedData.getContent().size(); i++) {
+                JavaProperty javaProperty = parsedData.getContent().get(i);
+                if (javaProperty instanceof TranslatableItem) {
+                    TranslatableItem translatableItem = (TranslatableItem) javaProperty;
+                    if (isMapDefinition(translatableItem)) {
+                        parsedData.getContent().set(i, new MapDefinition(translatableItem));
+                    }
+                }
+            }
+        }
+
+        private boolean isMapDefinition(TranslatableItem translatableItem) {
+            for (String key : translatableItem.getValue().split(",")) {
+                if (parsedData.findItem(key.trim()) == -1) {
+                    return false;
+                }
+            }
+            return true;
+
+        }
+
+    }
+
+    private static boolean isEmptyLines(String line) {
+        return line.trim().isEmpty();
+    }
+
+    private static boolean isDescriptionComment(String line) {
+        return line.startsWith("##");
     }
 
     private static boolean isComment(String line) {
-        if (line.length() == 0 || line.trim().charAt(0) == '#') {
-            return true;
-        }
-        if (line.endsWith("\\")) {
-            return true;
-        }
-        if (line.contains(",")) {
+        if (line.trim().charAt(0) == '#') {
             return true;
         }
         return false;

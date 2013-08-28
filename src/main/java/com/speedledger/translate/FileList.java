@@ -11,8 +11,8 @@ public class FileList {
     private List<FileItem> files;
     private Map<String, FileItem> itemByPackage;
 
-    public FileList(List<FileItem>files) {
-        this.files=files;
+    public FileList(List<FileItem> files) {
+        this.files = files;
         itemByPackage = new HashMap<String, FileItem>();
         for (FileItem item : files) {
             itemByPackage.put(item.getPackageAndNameWithoutExt(), item);

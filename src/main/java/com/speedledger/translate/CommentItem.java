@@ -4,21 +4,26 @@ package com.speedledger.translate;
  * This class represents a comment in a java-property file.
  */
 public class CommentItem extends JavaProperty {
-    String comment;
+    String rawComment;
 
-    public CommentItem(String comment) {
-        this.comment = comment;
+    public CommentItem(String rawComment) {
+        this.rawComment = rawComment;
     }
 
     @Override
     public String toString() {
         return "CommentItem{" +
-                "comment='" + comment + '\'' +
+                "comment='" + rawComment + '\'' +
                 '}';
     }
 
     @Override
     public String getItem() {
-        return comment;
+        return rawComment;
+    }
+
+    @Override
+    public String getPropertiesFileFormatted() {
+        return "#" + getItem();
     }
 }

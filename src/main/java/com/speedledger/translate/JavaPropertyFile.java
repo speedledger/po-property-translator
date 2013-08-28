@@ -28,4 +28,12 @@ public class JavaPropertyFile {
         return -1;
     }
 
+    public JavaProperty getItem(String key) {
+        int index = findItem(key);
+        if(index != -1) {
+            return getContent().get(index);
+        }
+        return null;
+    }
+
 }
