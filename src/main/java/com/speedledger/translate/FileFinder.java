@@ -16,10 +16,10 @@ public class FileFinder {
     private String[] pathStops = {".hg", "pom", "emulator", "test", "101", "conf", "classes", "logging"}; // ignore everything with this string anywhere.
     private String[] langStops = {"_de", "_no", "_sv"};
 
-    private List<FileItem> processDir(File file, List<FileItem>files) {
+    private List<PropertyFileMetadata> processDir(File file, List<PropertyFileMetadata>files) {
         if (file.getName().endsWith(".properties") && allowed(file, langStops)) {
             LOG.finest("processDir file:" + file.getPath());
-            files.add(new FileItem(file));
+            files.add(new PropertyFileMetadata(file));
         }
         File[] children = file.listFiles();
         if (children != null) {
@@ -47,6 +47,6 @@ public class FileFinder {
      * @return list of files found
      */
     public FileList getFileList(File rootDir) {
-        return new FileList(processDir(rootDir, new ArrayList<FileItem>()));
+        return new FileList(processDir(rootDir, new ArrayList<PropertyFileMetadata>()));
     }
 }

@@ -7,6 +7,7 @@ import org.fedorahosted.tennera.jgettext.PoWriter;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -14,8 +15,7 @@ import java.util.logging.Logger;
  * This class exports all java-property-files as one .po-file.
  */
 public class PoExporter {
-    private static Logger LOG = LoggerFactory.getLogger(PoExporter.class);
-    private FileFinder finder = new FileFinder();
+    private static final Logger log = LoggerFactory.getLogger(PoExporter.class);
     private String defaultFileName = "out.po";
 
     /**
@@ -24,42 +24,45 @@ public class PoExporter {
      * @throws IOException
      */
     public void export(String lang) throws IOException {
-        LOG.info("export started lang:" + lang);
-        List<FileItem> files = finder.getFileList(new File(".")).getFiles();
-        LOG.finest("items:" + files);
+        log.info("export started lang:" + lang);
+        List<PropertyFileMetadata> files = getIO().getFileList(new File(".")).getFiles();
+        log.finest("items:" + files);
         Catalog export = new Catalog();
-        for (FileItem file : files) {
-            JavaPropertyFile data = JavaPropertyFileReader.readFile(file.getLangFile(lang));
-            JavaPropertyFile dataReferenceLang = JavaPropertyFileReader.readFile(file.getFile());
+        for (PropertyFileMetadata file : files) {
+            JavaPropertyFile data = getIO().readJavaPropertyFile(file.getLangFile(lang));
+            JavaPropertyFile dataReferenceLang = getIO().readJavaPropertyFile(file.getFile());
             populateCatalog(file, data, dataReferenceLang, export);
         }
         PoWriter writer = new PoWriter();
         File outFile = new File(defaultFileName);
-        writer.write(export, outFile);
-        LOG.info("export done, wrote:" + outFile.getAbsolutePath());
+        Writer fileWriter = getIO().createPOWriter(outFile);
+        writer.write(export, fileWriter);
+        log.info("export done, wrote:" + outFile.getAbsolutePath());
     }
 
-    private static void populateCatalog(FileItem file, JavaPropertyFile data, JavaPropertyFile dataReferenceLang, Catalog export) {
-        String description = "";
-        for (PropertyFileItem line : data.getContent()) {
-            if (line instanceof DescriptionCommentItem) {
-                description = ((DescriptionCommentItem) line).getItem();
-            }
 
-            Message msg = new Message();
+    protected IO getIO() {
+        return new IO();
+    }
+
+
+    private static void populateCatalog(PropertyFileMetadata file, JavaPropertyFile data, JavaPropertyFile dataReferenceLang, Catalog export) {
+        String description = getDescriptionComment(dataReferenceLang);
+
+        for (PropertyFileItem line : data.getContent()) {
             if (line instanceof TranslatableItem) {
+                Message msg = new Message();
                 TranslatableItem item = (TranslatableItem) line;
                 msg.setMsgid(item.getKey());
                 msg.setMsgstr(item.getValue());
                 String packageName = file.getPackageAndNameWithoutExt();
-                LOG.fine("packageName:" + packageName + ":");
-                //msg.addSourceReference(packName);
+                log.fine("packageName:" + packageName + ":");
                 msg.setMsgctxt(packageName);
                 if (!description.isEmpty()) {
                     msg.addComment(description);
                 }
                 PropertyFileItem referenceLang = dataReferenceLang.getItem(item.getKey());
-                if (referenceLang != null && referenceLang instanceof TranslatableItem) {
+                if (referenceLang != null) {
                     String referenceText = ((TranslatableItem) referenceLang).getValue();
                     if (!referenceText.isEmpty()) {
                         msg.addComment(referenceText);
@@ -69,6 +72,18 @@ public class PoExporter {
                 export.addMessage(msg);
             }
         }
+    }
+
+    private static String getDescriptionComment(JavaPropertyFile dataReferenceLang) {
+        String description = "";
+        //find the description comment text from the reference language file
+        for (PropertyFileItem line : dataReferenceLang.getContent()) {
+            if (line instanceof DescriptionCommentItem) {
+                description = ((DescriptionCommentItem) line).getItem();
+                break;
+            }
+        }
+        return description;
     }
 
     public static void main(String[] args) throws IOException {

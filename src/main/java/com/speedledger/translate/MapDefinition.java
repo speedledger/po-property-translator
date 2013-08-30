@@ -3,8 +3,6 @@ package com.speedledger.translate;
 /**
  */
 public class MapDefinition extends PropertyFileItem {
-
-
     private final String value;
     private final String key;
 

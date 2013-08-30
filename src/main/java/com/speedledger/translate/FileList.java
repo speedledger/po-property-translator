@@ -8,22 +8,22 @@ import java.util.Map;
  * This immutable class holds a list of files for processing
  */
 public class FileList {
-    private List<FileItem> files;
-    private Map<String, FileItem> itemByPackage;
+    private List<PropertyFileMetadata> files;
+    private Map<String, PropertyFileMetadata> itemByPackage;
 
-    public FileList(List<FileItem> files) {
+    public FileList(List<PropertyFileMetadata> files) {
         this.files = files;
-        itemByPackage = new HashMap<String, FileItem>();
-        for (FileItem item : files) {
+        itemByPackage = new HashMap<String, PropertyFileMetadata>();
+        for (PropertyFileMetadata item : files) {
             itemByPackage.put(item.getPackageAndNameWithoutExt(), item);
         }
     }
 
-    public List<FileItem> getFiles() {
+    public List<PropertyFileMetadata> getFiles() {
         return files;
     }
 
-    public FileItem getItemByPackage(String name) {
+    public PropertyFileMetadata getItemByPackage(String name) {
         return itemByPackage.get(name);
     }
 

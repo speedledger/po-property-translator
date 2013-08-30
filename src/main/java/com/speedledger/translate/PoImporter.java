@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 public class PoImporter {
     private static Logger LOG = LoggerFactory.getLogger(PoImporter.class);
     private FileFinder finder = new FileFinder();
-    private String defaultFileName = "out.po";
+
 
     /**
      * Import a .po-file
@@ -26,11 +26,11 @@ public class PoImporter {
      */
     public void importPo(String lang) throws IOException {
         PoParser parser = new PoParser();
-        Catalog cat = parser.parseCatalog(new File(defaultFileName));
+        Catalog cat = parser.parseCatalog(getIO().getPOFileReader(), false);
         Iterator<Message> iterator = cat.iterator();
         ArrayList<Message> msgs = new ArrayList<Message>();
         String oldCtx = null;
-        FileList allFiles= finder.getFileList(new File("."));
+        FileList allFiles = getIO().getFileList(new File(".")); //finder.getFileList(new File("."));
         while (iterator.hasNext()) {
             Message msg = iterator.next();
             if (!msg.getMsgctxt().equals(oldCtx) && oldCtx != null) {
@@ -52,9 +52,9 @@ public class PoImporter {
      */
     private void handle(ArrayList<Message> msgs, String lang, FileList allFiles) throws IOException {
         String packageName = msgs.get(0).getMsgctxt();
-        FileItem item = allFiles.getItemByPackage(packageName);
+        PropertyFileMetadata item = allFiles.getItemByPackage(packageName);
         if (item != null) {
-            JavaPropertyFile property = JavaPropertyFileReader.readFile(item.getLangFile(lang));
+            JavaPropertyFile property = getIO().readJavaPropertyFile(item.getLangFile(lang));
             boolean dirty = false;
             for (int row = 0; row < msgs.size(); row++) {
                 Message msg = msgs.get(row);
@@ -67,19 +67,15 @@ public class PoImporter {
                 }
             }
             if (dirty) {
-                JavaPropertyFileWriter.write(item.getLangFile(lang), property);
+                getIO().writeJavaPropertyFile(item.getLangFile(lang), property);
             }
         } else {
             LOG.warning("Warning: ignoring not found resource:" + packageName);
         }
     }
 
-    public static void main(String[] args) throws IOException {
-        PoImporter importer = new PoImporter();
-        String lang="";
-        if(args.length>0) {
-            lang=args[0];
-        }
-        importer.importPo(lang);
+
+    protected IO getIO() {
+        return new IO();
     }
 }
