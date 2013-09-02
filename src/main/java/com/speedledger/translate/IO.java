@@ -1,6 +1,7 @@
 package com.speedledger.translate;
 
 import com.speedledger.base.logging.shared.LoggerFactory;
+import com.speedledger.translate.item.PropertyFileItem;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -10,6 +11,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -24,7 +26,7 @@ public class IO {
         return readJavaPropertyFile(new FileReader(file));
     }
 
-    public JavaPropertyFile readJavaPropertyFile(Reader fileReader) throws IOException {
+    private JavaPropertyFile readJavaPropertyFile(Reader fileReader) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(fileReader);
         String line;
         Parser parser = new Parser();
@@ -48,7 +50,7 @@ public class IO {
         writeJavaPropertyFile(new FileWriter(outFile), content);
     }
 
-    public void writeJavaPropertyFile(Writer outFile, JavaPropertyFile content) throws IOException {
+    private void writeJavaPropertyFile(Writer outFile, JavaPropertyFile content) throws IOException {
         log.info("write:" + outFile);
         Writer writer = null;
         try {
@@ -62,6 +64,7 @@ public class IO {
             try {
                 writer.close();
             } catch (Exception ex) {
+                log.log(Level.SEVERE, "failed to close file:",ex);
             }
         }
     }

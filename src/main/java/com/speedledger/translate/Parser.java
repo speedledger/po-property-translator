@@ -1,11 +1,18 @@
 package com.speedledger.translate;
 
 import com.speedledger.base.logging.shared.LoggerFactory;
+import com.speedledger.translate.item.CommentItem;
+import com.speedledger.translate.item.DescriptionCommentItem;
+import com.speedledger.translate.item.EmptyLineItem;
+import com.speedledger.translate.item.MapDefinition;
+import com.speedledger.translate.item.PropertyFileItem;
+import com.speedledger.translate.item.TranslatableItem;
 
 import java.io.Reader;
 import java.util.logging.Logger;
 
 /**
+ * This class parses a property-file.
  */
 class Parser {
     private static Logger LOG = LoggerFactory.getLogger(Parser.class);

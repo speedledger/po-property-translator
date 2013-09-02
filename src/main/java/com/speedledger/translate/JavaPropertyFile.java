@@ -1,6 +1,8 @@
 package com.speedledger.translate;
 
 import com.google.common.collect.Maps;
+import com.speedledger.translate.item.PropertyFileItem;
+import com.speedledger.translate.item.TranslatableItem;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -1,6 +1,7 @@
 package com.speedledger.translate;
 
 import com.speedledger.base.logging.shared.LoggerFactory;
+import com.speedledger.translate.item.TranslatableItem;
 import org.fedorahosted.tennera.jgettext.Catalog;
 import org.fedorahosted.tennera.jgettext.Message;
 import org.fedorahosted.tennera.jgettext.PoParser;
