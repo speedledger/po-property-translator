@@ -3,8 +3,12 @@ package com.speedledger.translate;
 import com.speedledger.base.logging.shared.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -13,8 +17,20 @@ import java.util.logging.Logger;
 public class FileFinder {
     private static Logger LOG = LoggerFactory.getLogger(FileFinder.class);
     public static String extension = ".properties";
-    private String[] pathStops = {".hg", "pom", "emulator", "test", "101", "conf", "classes", "logging"}; // ignore everything with this string anywhere.
-    private String[] langStops = {"_de", "_no", "_sv"};
+    private static String[] pathStops; // ignore everything with these filenames.
+    private static String[] langStops; // ignore everything with these filenames.
+    static {
+        String settingsFile="/settings.properties";
+        InputStream fis = FileFinder.class.getResourceAsStream(settingsFile);
+        Properties prop = new Properties();
+        try {
+            prop.load(fis);
+            pathStops=prop.getProperty("pathStops").split(",");
+            langStops=prop.getProperty("langStops").split(",");
+        } catch (IOException e) {
+            LOG.log(Level.SEVERE,"failed to read settings file:"+settingsFile, e);
+        }
+    }
 
     private List<PropertyFileMetadata> processDir(File file, List<PropertyFileMetadata>files) {
         if (file.getName().endsWith(".properties") && allowed(file, langStops)) {
