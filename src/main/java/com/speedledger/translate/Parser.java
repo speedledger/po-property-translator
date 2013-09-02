@@ -65,12 +65,20 @@ class Parser {
      * @return true if the item is a map definition
      */
     private boolean isMapDefinition(TranslatableItem translatableItem) {
-        for (String key : translatableItem.getValue().split(",")) {
-            if (parsedData.getItem(key.trim()) == null) {
-                return false;
+        int keysFound = 0;
+        String[] keys = translatableItem.getValue().split(",");
+        for (String key : keys) {
+            if (parsedData.getItem(key.trim()) != null) {
+                keysFound++;
             }
         }
-        return true;
+        if(keysFound > 0) {
+            if(keysFound < keys.length) {
+                LOG.warning("Some keys are missing their definition in :"+translatableItem);
+            }
+            return true;
+        }
+        return false;
     }
 
     private static boolean isEmptyLine(String line) {

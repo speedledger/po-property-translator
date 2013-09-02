@@ -63,4 +63,34 @@ public class PoExporterTest {
         System.out.println("output: " + mockIO.getPOOutputFileContents());
     }
 
+    @Test
+    public void exportMultiline() throws Exception {
+        final MockIO mockIO = new MockIO();
+        mockIO.addFakePropertyFile(new File("/resources/com/speedledger/test/test.properties"),
+                "multilineproperty=firstline \\" +
+                        " secondline\\" +
+                        " third line of the property"
+        );
+        mockIO.addFakePropertyFile(new File("/resources/com/speedledger/test/test_sv.properties"),
+                "multilineproperty=firstline \\" +
+                        " secondline\\" +
+                        " third line of the property"
+        );
+
+        PoExporter poExporter = new PoExporter() {
+            @Override
+            protected IO getIO() {
+                return mockIO;
+            }
+        };
+
+        //make the export to a PO file
+        poExporter.export("sv");
+
+        //verify the result
+        String resultFileContents = mockIO.getPOOutputFileContents();
+
+        System.out.println(resultFileContents);
+    }
+
 }

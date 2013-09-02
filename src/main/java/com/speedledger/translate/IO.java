@@ -20,7 +20,11 @@ import java.util.logging.Logger;
 public class IO {
 
     private static Logger log = LoggerFactory.getLogger(IO.class);
-    private String defaultFileName = "out.po";
+    private String defaultFileName = "out_[lang].po";
+
+    public String getDefaultPOFileName(String lang) {
+        return defaultFileName.replace("[lang]", lang);
+    }
 
     public JavaPropertyFile readJavaPropertyFile(File file) throws IOException {
         return readJavaPropertyFile(new FileReader(file));
@@ -47,11 +51,11 @@ public class IO {
 
 
     public void writeJavaPropertyFile(File outFile, JavaPropertyFile content) throws IOException {
+        log.info("write:" + outFile);
         writeJavaPropertyFile(new FileWriter(outFile), content);
     }
 
     public void writeJavaPropertyFile(Writer outFile, JavaPropertyFile content) throws IOException {
-        log.info("write:" + outFile);
         Writer writer = null;
         try {
             writer = new BufferedWriter(outFile);
@@ -64,7 +68,7 @@ public class IO {
             try {
                 writer.close();
             } catch (Exception ex) {
-                log.log(Level.SEVERE, "failed to close file:",ex);
+                log.log(Level.SEVERE, "failed to close file:", ex);
             }
         }
     }
@@ -83,7 +87,7 @@ public class IO {
         return new FileWriter(outputFile);
     }
 
-    public Reader getPOFileReader() throws IOException {
-        return new FileReader(defaultFileName);
+    public Reader getPOFileReader(String lang) throws IOException {
+        return new FileReader(getDefaultPOFileName(lang));
     }
 }

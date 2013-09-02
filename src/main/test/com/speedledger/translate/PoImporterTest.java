@@ -55,4 +55,66 @@ public class PoImporterTest {
         System.out.println(result);
     }
 
+
+    /**
+     * Test of a bug, the key of the contries map "countryCodeToCountryNameMap" was missing in the output
+     * @throws Exception
+     */
+    @Test
+    public void importContriesMap() throws Exception {
+        final MockIO mockIO = new MockIO();
+
+        mockIO.addFakePropertyFile(new File("/resources/com/speedledger/ebok/core/service/command/country/CountryServerConstants.properties"),
+                "##To see these translations, go to File Menu -> Open File -> Click Help \n" +
+                        "countryCodeToCountryNameMap=AD,AE,AF\n" +
+                        "AD=Andorra\n" +
+                        "AE=Förenade Arabemiraten\n" +
+                        "AF=Afghanistan"
+        );
+        mockIO.addFakePropertyFile(new File("/resources/com/speedledger/ebok/core/service/command/country/CountryServerConstants_sv.properties"),
+                "#This is a comment that should be ignored but present in the output\n" +
+                        "countryCodeToCountryNameMap=AD,AE,AF\n" +
+                                                "AD=Andorra\n" +
+                                                "AE=Förenade Arabemiraten\n" +
+                                                "AF=Afghanistan"
+        );
+
+        mockIO.setMockInputPOFileContents(
+                "# Andorra\n" +
+                        "msgctxt \"\"\n" +
+                        "\"com/speedledger/ebok/core/service/command/country/CountryServerConstants\"\n" +
+                        "msgid \"AD\"\n" +
+                        "msgstr \"Andorra\"\n" +
+                        "\n" +
+                        "# Förenade Arabemiraten\n" +
+                        "msgctxt \"\"\n" +
+                        "\"com/speedledger/ebok/core/service/command/country/CountryServerConstants\"\n" +
+                        "msgid \"AE\"\n" +
+                        "msgstr \"Förenade Arabemiraten\"\n" +
+                        "\n" +
+                        "# Afghanistan\n" +
+                        "msgctxt \"\"\n" +
+                        "\"com/speedledger/ebok/core/service/command/country/CountryServerConstants\"\n" +
+                        "msgid \"AF\"\n" +
+                        "msgstr \"Afghanistan\"\n"
+        );
+
+        PoImporter importer = new PoImporter() {
+            @Override
+            protected IO getIO() {
+                return mockIO;
+            }
+        };
+
+        //do the import
+        importer.importPo("sv");
+
+        //verify the result
+        String result = mockIO.getWrittenPropertyFile(new File("/resources/com/speedledger/ebok/core/service/command/country/CountryServerConstants_sv.properties"));
+
+        System.out.println(result);
+
+        Assert.assertTrue(result.contains("countryCodeToCountryNameMap"));
+    }
+
 }

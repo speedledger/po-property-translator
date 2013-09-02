@@ -1,8 +1,5 @@
 package com.speedledger.translate.item;
 
-import com.speedledger.translate.item.PropertyFileItem;
-import com.speedledger.translate.item.TranslatableItem;
-
 /**
  * This class handles Maps within a properties-file.
  */
@@ -19,5 +16,9 @@ public class MapDefinition extends PropertyFileItem {
     @Override
     public String getItem() {
         return value;
+    }
+
+    public String getPropertiesFileFormatted() {
+        return key + "=" + value;
     }
 }

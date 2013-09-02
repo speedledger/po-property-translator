@@ -17,8 +17,6 @@ import java.util.logging.Logger;
  */
 public class PoImporter {
     private static Logger LOG = LoggerFactory.getLogger(PoImporter.class);
-    private FileFinder finder = new FileFinder();
-
 
     /**
      * Import a .po-file
@@ -27,14 +25,15 @@ public class PoImporter {
      */
     public void importPo(String lang) throws IOException {
         PoParser parser = new PoParser();
-        Catalog cat = parser.parseCatalog(getIO().getPOFileReader(), false);
+        Catalog cat = parser.parseCatalog(getIO().getPOFileReader(lang), false);
         Iterator<Message> iterator = cat.iterator();
         ArrayList<Message> msgs = new ArrayList<Message>();
         String oldCtx = null;
         FileList allFiles = getIO().getFileList(new File(".")); //finder.getFileList(new File("."));
         while (iterator.hasNext()) {
             Message msg = iterator.next();
-            if (!msg.getMsgctxt().equals(oldCtx) && oldCtx != null) {
+            String msgContext = msg.getMsgctxt();
+            if (msgContext != null && !msgContext.equals(oldCtx) && oldCtx != null) {
                 handle(msgs, lang, allFiles);
                 msgs.clear();
             }

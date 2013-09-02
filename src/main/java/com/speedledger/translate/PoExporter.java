@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  */
 public class PoExporter {
     private static final Logger log = LoggerFactory.getLogger(PoExporter.class);
-    private String defaultFileName = "out.po";
+
 
     /**
      * Export a .po-file
@@ -37,7 +37,7 @@ public class PoExporter {
             populateCatalog(file, data, dataReferenceLang, export);
         }
         PoWriter writer = new PoWriter();
-        File outFile = new File(defaultFileName);
+        File outFile = new File(getIO().getDefaultPOFileName(lang));
         Writer fileWriter = getIO().createPOWriter(outFile);
         writer.write(export, fileWriter);
         log.info("export done, wrote:" + outFile.getAbsolutePath());

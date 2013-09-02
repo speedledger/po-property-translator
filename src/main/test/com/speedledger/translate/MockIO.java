@@ -83,7 +83,7 @@ class MockIO extends IO {
     }
 
     @Override
-    public Reader getPOFileReader() {
+    public Reader getPOFileReader(String lang) {
         return new StringReader(inputPOFileContents);
     }
 
