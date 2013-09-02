@@ -2,20 +2,25 @@ po-property-translator
 ======================
 
 Round-trip transformation between Java property files and PO-files for translations. 
-This tool makes translating text inside java:s properties-files easier.
-When running the export-tool, a .po-file is produced. This can be sent for translation.
-When the file comes back, the tool PoImporter can import these texts back into the .properties-files.
-It can be useful when using GWT (Google web toolkit).
+This tool makes translating text inside Java's property files easier.
+When running the export tool, a `.po`-file is produced. This can be sent for translation.
+When the file comes back, the tool `PoImporter` can import these texts back into the property files.
 
-Example:
+We use it in conjunction with GWT (Google Web Toolkit).
 
-Compile the tool:
-mvn clean install
+### Usage
 
-run:
+Compile using Maven:
+```shell
+  mvn clean install
+```
 
-to generate the out.po-file (reads properties-files from current directory):
+To generate the `out.po` file (reads properties-files from current directory):
+```shell
 java -jar target/translate.jar export
+```
 
-to import back:
+To import back:
+```shell
 java -jar target/translate.jar import
+```
