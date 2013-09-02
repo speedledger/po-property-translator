@@ -26,7 +26,7 @@ public class IO {
         return readJavaPropertyFile(new FileReader(file));
     }
 
-    private JavaPropertyFile readJavaPropertyFile(Reader fileReader) throws IOException {
+    public JavaPropertyFile readJavaPropertyFile(Reader fileReader) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(fileReader);
         String line;
         Parser parser = new Parser();
@@ -50,7 +50,7 @@ public class IO {
         writeJavaPropertyFile(new FileWriter(outFile), content);
     }
 
-    private void writeJavaPropertyFile(Writer outFile, JavaPropertyFile content) throws IOException {
+    public void writeJavaPropertyFile(Writer outFile, JavaPropertyFile content) throws IOException {
         log.info("write:" + outFile);
         Writer writer = null;
         try {
