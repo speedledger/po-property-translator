@@ -38,6 +38,11 @@ if the file is watched in a text editor.
 each term in the resulting PO file. This could be used as an extra context for the translator that could describe where
 in the program the terms could be found.
 
+### Special settings
+The property file settings.properties contains some configurations
+* `pathStops` is a list of directories that should be excluded while collecting properties files for export
+* `langStops` is a list of languages that are allowed in the export
+
 ### Example
 
 An interface is created that extends googles i18n.Constans.
