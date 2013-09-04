@@ -41,39 +41,39 @@ in the program the terms could be found.
 ### Example
 
 An interface is created that extends googles i18n.Constans.
-{code:title=FileMenuConstants.java|borderStyle=solid}
+```
 interface FileMenuConstants extends Constants {
     String openFile();
     String saveAs();
     String quit();
     Map<String,String> allItems();
 }
-{code}
+```
 
 Matching properties files are created with the tranlations (or stub of the translations).
-{panel}
+```
 FileMenuConstants.properties          //default language (containing terms in english)
 FileMenuConstants_sv.properties       //swedish
 FileMenuConstants_de.properties       //german
-{panel}
+```
 
 Content of "FileMenuConstants.properties"
-{code:title=FileMenuConstants.properties|borderStyle=solid}
+```
 ##Menu items of the file menu
 openFile=Open file
 saveAs=Save as
 quit=Exit program
 allItems = openFile, saveAs, quit
-{code}
+```
 
 Content of "FileMenuConstants_sv.properties"
-{code:title=FileMenuConstants_sv.properties|borderStyle=solid}
+```
 #This comment will be ignored
 openFile=Öppna fil
 saveAs=Spara som
 quit=Avsluta
 allItems = openFile, saveAs, quit
-{code}
+```
 
 Run the export for swedish:
 ```shell
@@ -81,7 +81,7 @@ java -jar target/translate.jar export sv
 ```
 
 A PO file named "out_sv.po" is created:
-{code:title=out_sv.po|borderStyle=solid}
+```
 # Menu items of the file menu
 # Open file
 msgctxt "path/to/the/property/file/FileMenuConstants"
@@ -99,7 +99,6 @@ msgstr "Spara som"
 msgctxt "path/to/the/property/file/FileMenuConstants"
 msgid "quit"
 msgstr "Avsluta"
-
 ```
 
 Use this file to create or update translations in swedish. And then import back
