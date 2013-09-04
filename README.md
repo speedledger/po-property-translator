@@ -50,14 +50,14 @@ interface FileMenuConstants extends Constants {
 }
 ```
 
-Matching properties files are created with the tranlations (or stub of the translations).
+Matching properties files are created with the translations (or stub of the translations).
 ```
 FileMenuConstants.properties          //default language (containing terms in english)
 FileMenuConstants_sv.properties       //swedish
 FileMenuConstants_de.properties       //german
 ```
 
-Content of "FileMenuConstants.properties"
+Content of `FileMenuConstants.properties`
 ```
 ##Menu items of the file menu
 openFile=Open file
@@ -66,7 +66,7 @@ quit=Exit program
 allItems = openFile, saveAs, quit
 ```
 
-Content of "FileMenuConstants_sv.properties"
+Content of `FileMenuConstants_sv.properties`
 ```
 #This comment will be ignored
 openFile=Öppna fil
@@ -80,7 +80,7 @@ Run the export for swedish:
 java -jar target/translate.jar export sv
 ```
 
-A PO file named "out_sv.po" is created:
+A PO file named `out_sv.po` is created:
 ```
 # Menu items of the file menu
 # Open file
@@ -108,7 +108,7 @@ To import back:
 java -jar target/translate.jar import sv
 ```
 
-The file FileMenuConstants_sv.properties will now contain the new translations.
+The file `FileMenuConstants_sv.properties` will now contain the new translations.
 
 
 
