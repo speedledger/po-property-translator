@@ -55,7 +55,6 @@ class MockIO extends IO {
     public FileList getFileList(File rootDir) {
         return new FileList(FluentIterable.from(fakeInputPropertyFiles.keySet()).
                 filter(new Predicate<File>() {
-                    @Override
                     public boolean apply(File file) {
                         //list only reference language files, not translations like "test_sv.properties"
                         return !file.getName().contains("_");
