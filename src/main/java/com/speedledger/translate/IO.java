@@ -36,6 +36,7 @@ public class IO {
         Parser parser = new Parser();
         String parseLine = "";
         while ((line = bufferedReader.readLine()) != null) {
+            line=convertToInternal(line);
             if (line.endsWith("\\")) { // buffer to-be-followed-line
                 parseLine += line.substring(0, line.length() - 1);
             } else { // handle line
@@ -49,6 +50,13 @@ public class IO {
         return parser.getParsedData();
     }
 
+    private String convertToInternal(String line) {
+        return line.replaceAll("''","'");
+    }
+
+    private String convertToExternal(String line) {
+        return line.replaceAll("'","''");
+    }
 
     public void writeJavaPropertyFile(File outFile, JavaPropertyFile content) throws IOException {
         log.info("write:" + outFile);
@@ -61,7 +69,7 @@ public class IO {
             writer = new BufferedWriter(outFile);
             for (PropertyFileItem prop : content.getContent()) {
                 log.finest("write:" + prop.getItem());
-                writer.write(prop.getPropertiesFileFormatted());
+                writer.write(convertToExternal(prop.getPropertiesFileFormatted()));
                 writer.write("\n");
             }
         } finally {
